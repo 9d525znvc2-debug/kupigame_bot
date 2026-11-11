@@ -1,5 +1,5 @@
 ВСТАВЬТЕ СЮДА ВАШ ТОКЕН ИЗ BOTFATHER (вместе с кавычками)
-BOT_TOKEN = "9242516981:AAGLMbUIijikVPxOq9qFLWPeGZ-jscgGWcI"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 ВАШ ID
 ADMIN_ID = 8567564191
 bot = Bot(token=BOT_TOKEN) dp = Dispatcher() user_map = {}
