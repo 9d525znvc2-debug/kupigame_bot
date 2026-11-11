@@ -1,6 +1,8 @@
 import asyncio
 import aiosqlite
 import os
+from flask import Flask
+from threading import Thread
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
@@ -14,6 +16,18 @@ ADMIN_ID = int(os.getenv("ADMIN_ID", 8567564191))
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 DB_NAME = "support.db"
+
+# --- ВЕБ-СЕРВЕР ДЛЯ RENDER (чтобы не брал деньги) ---
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Bot is alive!"
+
+def run_web_server():
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 8080)))
+
+# --- КОНЕЦ ВЕБ-СЕРВЕРА ---
 
 class SupportStates(StatesGroup):
     waiting_for_message = State()
@@ -217,4 +231,9 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
+    # Запускаем веб-сервер в отдельном потоке
+    t = Thread(target=run_web_server)
+    t.start()
+    
+    # Запускаем бота
     asyncio.run(main())
